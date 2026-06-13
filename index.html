@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cancer Care Registration Workflow</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    form {
+      max-width: 500px;
+      width: 90%;
+      background: #fff;
+      padding: 24px;
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #3157a9;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .step {
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+      filter: blur(4px);
+    }
+    .step.active {
+      opacity: 1;
+      pointer-events: auto;
+      position: relative;
+      filter: blur(0);
+      animation: fadeIn 0.8s ease forwards;
+    }
+    input, select, textarea {
+      width: 100%;
+      margin: 10px 0 20px 0;
+      padding: 12px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      transition: border-color 0.3s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #4287f5;
+      outline: none;
+      box-shadow: 0 0 8px rgba(66, 135, 245, 0.4);
+    }
+    button {
+      background: #4287f5;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+      margin-right: 10px;
+      user-select: none;
+    }
+    button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+    #aiResult, #savedMsg {
+      margin-top: 12px;
+      color: green;
+      font-weight: 600;
+      min-height: 24px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+        filter: blur(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <form id="cancerForm" autocomplete="off">
+    <!-- Step 1: Register -->
+    <div class="step active" id="step1">
+      <h2>Register</h2>
+      <input type="text" placeholder="Patient Name" required />
+      <input type="email" placeholder="Email" required />
+      <button type="button" onclick="nextStep(1)">Next</button>
+    </div>
+    <!-- Step 2: AI Analysis -->
+    <div class="step" id="step2">
+      <h2>AI-Powered Cancer Type Analysis</h2>
+      <textarea id="analysisInput" placeholder="Enter medical data"></textarea>
+      <button type="button" onclick="runAIAnalysis()">Analyze</button>
+      <div id="aiResult"></div>
+      <button type="button" onclick="nextStep(2)">Next</button>
+    </div>
+    <!-- Step 3: Search for Care -->
+    <div class="step" id="step3">
+      <h2>Search for Care Options</h2>
+      <select id="careOptions">
+        <option>Oncology Center</option>
+        <option>Multi-specialty Hospital</option>
+        <option>Cancer Research Hospital</option>
+      </select>
+      <button type="button" onclick="nextStep(3)">Next</button>
+    </div>
+    <!-- Step 4: Select Hospital -->
+    <div class="step" id="step4">
+      <h2>Select Hospital</h2>
+      <select id="hospitalSelect">
+        <option>Hospital A</option>
+        <option>Hospital B</option>
+        <option>Hospital C</option>
+      </select>
+      <button type="button" onclick="nextStep(4)">Next</button>
+    </div>
+    <!-- Step 5: Save & Second Opinion -->
+    <div class="step" id="step5">
+      <h2>Save & Request Second Opinion</h2>
+      <button type="button" onclick="saveRequest()">Save & Request</button>
+      <div id="savedMsg"></div>
+      <button type="button" onclick="nextStep(5)">Next</button>
+    </div>
+    <!-- Step 6: Connect Patient & Doctor -->
+    <div class="step" id="step6">
+      <h2>Connecting Patient & Doctor</h2>
+      <div>Website Live Chat: <a href="#">Start Consultation</a></div>
+      <button type="button" onclick="nextStep(6)">Next</button>
+    </div>
+    <!-- Step 7: Patient Confirmation -->
+    <div class="step" id="step7">
+      <h2>Patient Confirmation to Continue</h2>
+      <button type="submit">Confirm & Finish</button>
+    </div>
+  </form>
+
+  <script>
+    let currentStep = 1;
+    const steps = document.querySelectorAll(".step");
+
+    document.addEventListener("DOMContentLoaded", () => showStep(currentStep));
+
+    function showStep(n) {
+      steps.forEach((step, i) => {
+        if(i === n - 1) {
+          step.classList.add("active");
+        } else {
+          step.classList.remove("active");
+        }
+      });
+    }
+
+    function nextStep(n) {
+      currentStep = n + 1;
+      showStep(currentStep);
+    }
+
+    function runAIAnalysis() {
+      const userInput = document.getElementById("analysisInput").value.trim();
+      const result =
+        userInput.length > 10
+          ? "Possible tumor detected: Recommend specialist evaluation."
+          : "Insufficient data. Please provide more detail.";
+      document.getElementById("aiResult").innerText = result;
+    }
+
+    function saveRequest() {
+      document.getElementById("savedMsg").innerText = "Hospital saved & second opinion requested!";
+    }
+
+    document.getElementById("cancerForm").onsubmit = function (e) {
+      e.preventDefault();
+      alert("Patient confirmed. Workflow complete!");
+    };
+  </script>
+</body>
+</html>
